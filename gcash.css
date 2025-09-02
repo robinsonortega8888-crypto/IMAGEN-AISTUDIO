@@ -1,0 +1,111 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #38383e;
+    color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.payment-container {
+    background-color: #4a4a50;
+    padding: 32px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    text-align: center;
+}
+
+.payment-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #666;
+    padding-bottom: 20px;
+}
+
+.gcash-logo {
+    width: 120px;
+    height: auto;
+}
+
+.payment-header h2 {
+    margin: 0;
+    font-size: 1.6em;
+}
+
+.payment-details p {
+    margin: 5px 0;
+    color: #ccc;
+}
+
+.payment-details h3 {
+    margin: 10px 0 5px 0;
+    font-size: 1.4em;
+}
+
+.payment-details .price {
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #4CAF50;
+    margin: 10px 0;
+}
+
+.payment-details .credits {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+.qr-code-placeholder {
+    margin-top: 15px;
+}
+
+.qr-box {
+    width: 180px;
+    height: 180px;
+    background-color: #f0f0f0;
+    margin: 10px auto;
+    border-radius: 8px;
+    border: 5px solid #ccc;
+}
+
+.payment-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.payment-actions button {
+    border-radius: 8px;
+    padding: 14px;
+    font-weight: bold;
+    width: 100%;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+    border: none;
+}
+
+.payment-actions button:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+}
+
+.pay-button {
+    background-color: #0072ff; /* GCash brand blue */
+    color: white;
+}
+
+.cancel-button {
+    background-color: #6a737c;
+    color: white;
+}

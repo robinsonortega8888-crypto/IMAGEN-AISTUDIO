@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Creator | PICTOMOTION</title>
+    <link rel="stylesheet" href="video.css">
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/genai": "https://esm.sh/@google/genai@1.0.0"
+        }
+      }
+    </script>
+</head>
+<body>
+    <header class="page-header">
+        <a href="index.html" class="back-link">&larr; Back to Gallery</a>
+        <h1>PICTOMOTION<span class="h1-subtitle">Create Video from Image</span></h1>
+    </header>
+    <main id="video-creator-container">
+        <div id="source-panel">
+            <img id="source-image" src="" alt="Source image for video generation">
+        </div>
+        <div id="control-panel">
+            <label for="prompt-input">Prompt:</label>
+            <textarea id="prompt-input" rows="4" placeholder="e.g., Animate the northern lights to shimmer and dance across the sky.">Animate this image. Make the background move gently.</textarea>
+            <button id="generate-button" type="button">Generate Video</button>
+            <div id="result-container" aria-live="polite">
+                <p class="placeholder">Your generated video will appear here.</p>
+            </div>
+        </div>
+    </main>
+    
+    <script type="module" src="video.tsx"></script>
+</body>
+</html>

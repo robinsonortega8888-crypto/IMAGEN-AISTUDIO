@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCash Payment</title>
+    <link rel="stylesheet" href="gcash.css">
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/genai": "https://esm.sh/@google/genai@1.0.0"
+        }
+      }
+    </script>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="payment-header">
+            <img src="https://www.send-payments.com/wp-content/uploads/2021/11/gcash-logo-300x129-1.png" alt="GCash Logo" class="gcash-logo">
+            <h2>Confirm Purchase</h2>
+        </div>
+        <div class="payment-details">
+            <p>You are paying for:</p>
+            <h3 id="package-name">Starter Pack</h3>
+            <p class="price" id="package-price">$5.00</p>
+            <p class="credits" id="package-credits">10 Video Credits</p>
+            <div class="qr-code-placeholder">
+                <p>Scan QR to Pay</p>
+                <div class="qr-box"></div>
+            </div>
+        </div>
+        <div class="payment-actions">
+            <button id="pay-now-button" class="pay-button">Pay Now</button>
+            <button id="cancel-button" class="cancel-button">Cancel</button>
+        </div>
+    </div>
+    <script type="module" src="gcash.tsx"></script>
+</body>
+</html>

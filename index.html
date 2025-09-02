@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PICTOMOTION, IMAGE AND VIDEO AI GENERATOR</title>
+    <link rel="stylesheet" href="index.css">
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/genai": "https://esm.sh/@google/genai@1.0.0"
+        }
+      }
+    </script>
+</head>
+<body>
+    <h1>PICTOMOTION<span class="h1-subtitle">IMAGE AND VIDEO AI GENERATOR</span></h1>
+    <div id="controls">
+      <label for="prompt-input">Prompt:</label>
+      <textarea id="prompt-input" rows="4" aria-label="Enter the prompt for image generation">High-fashion editorial photograph, surrealism meets wildlife. A magnificent black panther, its fur like polished obsidian, stands with regal poise on a vast, crystalline salt flat under a twilight sky with two glowing moons. The panther is adorned in an avant-garde couture gown crafted from iridescent, beetle-wing-like material and layers of silk organza that mimic bioluminescent fungi, glowing softly in the dim light. The atmosphere is otherworldly yet tangible, with a fine mist clinging to the ground and the horizon lit by the last embers of a setting sun. Shot on a medium format camera for extreme detail, shallow depth of field, hyper-realistic textures on fur and fabric. The final image should feel like a dreamlike, yet believable, cover for a surrealist art and fashion magazine.</textarea>
+      <div id="settings">
+        <label for="aspect-ratio-select">Aspect Ratio:</label>
+        <select id="aspect-ratio-select" aria-label="Select aspect ratio for generated images">
+          <option value="1:1">1:1</option>
+          <option value="3:4">3:4</option>
+          <option value="4:3">4:3</option>
+          <option value="16:9">16:9</option>
+          <option value="9:16">9:16</option>
+        </select>
+        <label for="num-images-input">Number of Images:</label>
+        <input type="number" id="num-images-input" value="3" min="1" max="4" aria-label="Select number of images to generate">
+      </div>
+      <div id="image-upload-controls">
+        <input type="file" id="file-input" hidden accept="image/*">
+        <button id="upload-button" type="button">Upload Reference</button>
+        <img id="image-preview" src="" alt="Reference image preview" class="hidden">
+        <button id="clear-image-button" type="button" class="hidden">Clear</button>
+      </div>
+      <button id="generate-button">Generate</button>
+    </div>
+    <div id="image-gallery" aria-live="polite"></div>
+
+    <div id="add-object-modal" class="hidden">
+      <div class="modal-content">
+        <h2>Add an object to the image</h2>
+        <label for="modal-prompt-input">Prompt:</label>
+        <textarea id="modal-prompt-input" rows="3" placeholder="e.g., A small, red bird sitting on the panther's back"></textarea>
+        <div id="modal-image-upload-controls">
+            <input type="file" id="modal-file-input" hidden accept="image/*">
+            <button id="modal-upload-button" type="button">Upload Object Image</button>
+            <img id="modal-image-preview" src="" alt="Object image preview" class="hidden">
+            <button id="modal-clear-image-button" type="button" class="hidden">Clear</button>
+        </div>
+        <div class="modal-actions">
+          <button id="modal-cancel-button" type="button">Cancel</button>
+          <button id="modal-add-button" type="button">Add Object</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="create-video-modal" class="hidden">
+      <div class="modal-content video-modal-content">
+        <h2>Create Video from Image</h2>
+        <div class="video-modal-body">
+          <div class="video-modal-source-panel">
+             <img id="video-modal-source-image" src="" alt="Source image for video generation">
+          </div>
+          <div class="video-modal-control-panel">
+            <label for="video-modal-prompt-input">Prompt:</label>
+            <textarea id="video-modal-prompt-input" rows="4">Animate this image. Make the background move gently.</textarea>
+            <div class="video-modal-settings">
+                <label for="video-aspect-ratio-select">Aspect Ratio:</label>
+                <select id="video-aspect-ratio-select" aria-label="Select aspect ratio for generated video">
+                  <option value="16:9">16:9 (Landscape)</option>
+                  <option value="9:16">9:16 (Portrait)</option>
+                  <option value="1:1">1:1 (Square)</option>
+                  <option value="4:3">4:3 (Standard)</option>
+                  <option value="3:4">3:4 (Standard Portrait)</option>
+                </select>
+            </div>
+            <div id="video-modal-result-container" aria-live="polite">
+                <p class="placeholder">Your generated video will appear here.</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button id="video-modal-cancel-button" type="button">Close</button>
+          <button id="video-modal-generate-button" type="button">Generate Video</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="index.tsx"></script>
+</body>
+</html>
