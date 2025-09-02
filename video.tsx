@@ -8,7 +8,7 @@ import {GoogleGenAI} from '@google/genai';
 
 function main() {
     try {
-        const apiKey = (import.meta as any).env.VITE_GEMINI_API_KEY;
+        const apiKey = (import.meta as any)?.env?.VITE_GEMINI_API_KEY;
         if (!apiKey) {
           throw new Error("VITE_GEMINI_API_KEY is not set in the environment variables.");
         }

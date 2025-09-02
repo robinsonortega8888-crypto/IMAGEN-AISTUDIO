@@ -10,7 +10,7 @@ function main() {
   console.log('Application main function started.');
   
   try {
-    const apiKey = (import.meta as any).env.VITE_GEMINI_API_KEY;
+    const apiKey = (import.meta as any)?.env?.VITE_GEMINI_API_KEY;
     if (!apiKey) {
       throw new Error("VITE_GEMINI_API_KEY is not set in the environment variables.");
     }
@@ -236,7 +236,7 @@ function main() {
             for (let i = 0; i < numberOfImages; i++) {
                 const response = await ai.models.generateContent({
                     model: imageAndTextToImageModel,
-                    contents: [{ parts: [imagePart, textPart] }],
+                    contents: { parts: [imagePart, textPart] },
                     config: {
                         responseModalities: [Modality.IMAGE, Modality.TEXT],
                     },
@@ -414,7 +414,7 @@ function main() {
 
             const response = await ai.models.generateContent({
                 model: imageAndTextToImageModel,
-                contents: [{ parts }],
+                contents: { parts },
                 config: {
                     responseModalities: [Modality.IMAGE, Modality.TEXT],
                 },
