@@ -8,6 +8,7 @@ import {GoogleGenAI} from '@google/genai';
 
 function main() {
     try {
+        // FIX: The API key must be obtained exclusively from the environment variable `process.env.API_KEY`.
         const ai = new GoogleGenAI({apiKey: process.env.API_KEY});
 
         // -------------------- MODEL -------------------------------------------------
@@ -67,6 +68,7 @@ function main() {
                     if (loadingMessageElement) {
                         loadingMessageElement.textContent = 'Downloading video...';
                     }
+                    // FIX: The API key must be obtained exclusively from the environment variable `process.env.API_KEY`.
                     const response = await fetch(`${downloadLink}&key=${process.env.API_KEY}`);
                     if (!response.ok) {
                         throw new Error(`Failed to download video: ${response.statusText}`);
