@@ -10,9 +10,10 @@ function main() {
   console.log('Application main function started.');
   
   try {
-    const apiKey = process.env.API_KEY;
+    // Fix: Cast import.meta to any to access Vite environment variables without TypeScript errors.
+    const apiKey = (import.meta as any).env.VITE_API_KEY;
     if (!apiKey) {
-      throw new Error("API_KEY is not set in the environment variables.");
+      throw new Error("VITE_API_KEY is not set in the environment variables.");
     }
     console.log('API key found.');
 
@@ -579,7 +580,7 @@ function main() {
       controls.classList.add('hidden');
     }
     if (gallery) {
-      gallery.innerHTML = `<p style="color: #ff6b6b; font-weight: bold;">Application failed to start: The API_KEY environment variable is missing. Please go to your project settings (e.g., in Vercel), find the "Environment Variables" section, and add a variable named API_KEY with your key from Google AI Studio. After adding the key, you may need to redeploy your project.</p>`;
+      gallery.innerHTML = `<p style="color: #ff6b6b; font-weight: bold;">Application failed to start: The VITE_API_KEY environment variable is missing. Please go to your project settings (e.g., in Vercel), find the "Environment Variables" section, and add a variable named VITE_API_KEY with your key from Google AI Studio. Variables on Vercel used in the browser must be prefixed with VITE_. After adding the key, you may need to redeploy your project.</p>`;
     }
   }
 }
