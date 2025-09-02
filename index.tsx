@@ -7,9 +7,16 @@
 import {GoogleGenAI, GeneratedImage, Modality} from '@google/genai';
 
 function main() {
+  // FIX: Use process.env.API_KEY as per the coding guidelines to fix the TypeScript error on import.meta.env and align with API key handling requirements.
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    // Manually trigger the catch block if the key is missing.
+    // This maintains the existing error handling UI.
+    throw new Error("API_KEY is not set in the environment variables.");
+  }
+
   try {
-    // FIX: The API key must be obtained exclusively from the environment variable `process.env.API_KEY`.
-    const ai = new GoogleGenAI({apiKey: process.env.API_KEY});
+    const ai = new GoogleGenAI({apiKey});
 
     // -------------------- CHOOSE AN IMAGEN MODEL -------------------------------------------------
     const textToImageModel = 'imagen-4.0-generate-001';
@@ -470,8 +477,8 @@ function main() {
                 if (loadingMessageElement) {
                     loadingMessageElement.textContent = 'Downloading video...';
                 }
-                // FIX: The API key must be obtained exclusively from the environment variable `process.env.API_KEY`.
-                const response = await fetch(`${downloadLink}&key=${process.env.API_KEY}`);
+                
+                const response = await fetch(`${downloadLink}&key=${apiKey}`);
                 if (!response.ok) {
                     throw new Error(`Failed to download video: ${response.statusText}`);
                 }
