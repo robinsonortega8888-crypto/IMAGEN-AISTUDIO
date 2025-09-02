@@ -7,16 +7,17 @@
 import {GoogleGenAI, GeneratedImage, Modality} from '@google/genai';
 
 function main() {
-  // FIX: Use process.env.API_KEY as per the coding guidelines to fix the TypeScript error on import.meta.env and align with API key handling requirements.
-  const apiKey = process.env.API_KEY;
-  if (!apiKey) {
-    // Manually trigger the catch block if the key is missing.
-    // This maintains the existing error handling UI.
-    throw new Error("API_KEY is not set in the environment variables.");
-  }
-
+  console.log('Application main function started.');
+  
   try {
+    const apiKey = process.env.API_KEY;
+    if (!apiKey) {
+      throw new Error("API_KEY is not set in the environment variables.");
+    }
+    console.log('API key found.');
+
     const ai = new GoogleGenAI({apiKey});
+    console.log('GoogleGenAI initialized.');
 
     // -------------------- CHOOSE AN IMAGEN MODEL -------------------------------------------------
     const textToImageModel = 'imagen-4.0-generate-001';
@@ -59,6 +60,24 @@ function main() {
     let referenceImage: { base64Data: string; mimeType: string; width: number; height: number; } | null = null;
     let modalReferenceImage: { base64Data: string; mimeType: string; } | null = null;
     let targetImageElement: HTMLImageElement | null = null; // To hold the image being edited
+
+    /**
+     * Sets the loading state of a button, showing a spinner for feedback.
+     * @param button The button element to modify.
+     * @param isLoading Whether to show the loading state or not.
+     * @param originalText The text to restore when loading is finished.
+     */
+    function setButtonLoadingState(button: HTMLButtonElement, isLoading: boolean, originalText: string) {
+        if (isLoading) {
+            button.disabled = true;
+            button.innerHTML = '<span class="spinner"></span>';
+            button.classList.add('is-generating');
+        } else {
+            button.disabled = false;
+            button.innerHTML = originalText;
+            button.classList.remove('is-generating');
+        }
+    }
 
     function getApiErrorMessage(error: any): string {
         const message = JSON.stringify(error);
@@ -121,12 +140,9 @@ function main() {
     }
 
     async function generateAndDisplayImages() {
-      // Immediately disable the button and wrap the entire function
-      // in a try/finally to guarantee it gets re-enabled.
-      if (generateButton) {
-          generateButton.disabled = true;
-          generateButton.textContent = 'GENERATING...';
-      }
+      console.log('generateAndDisplayImages called.');
+      const originalButtonText = 'Generate';
+      setButtonLoadingState(generateButton, true, originalButtonText);
 
       try {
           if (!promptInput || !aspectRatioSelect || !imageGallery || !numImagesInput) {
@@ -144,10 +160,7 @@ function main() {
           const message = error instanceof Error ? error.message : "An unknown error occurred.";
           showMessage(`Error: ${message}`, true);
       } finally {
-          if (generateButton) {
-              generateButton.disabled = false;
-              generateButton.textContent = 'Generate';
-          }
+          setButtonLoadingState(generateButton, false, originalButtonText);
       }
     }
 
@@ -314,8 +327,7 @@ function main() {
         addObjectModal.classList.add('hidden');
         targetImageElement = null;
         modalPromptInput.value = '';
-        modalAddButton.disabled = false;
-        modalAddButton.textContent = 'Add Object';
+        setButtonLoadingState(modalAddButton, false, 'Add Object');
         handleModalClearImage(); // Also clear the object image
     }
 
@@ -352,8 +364,8 @@ function main() {
             return;
         }
 
-        modalAddButton.disabled = true;
-        modalAddButton.textContent = 'Adding...';
+        const originalButtonText = 'Add Object';
+        setButtonLoadingState(modalAddButton, true, originalButtonText);
 
         const imageSrc = targetImageElement.src;
         const [mimeTypeData, base64Data] = imageSrc.split(';base64,');
@@ -409,7 +421,7 @@ function main() {
             const friendlyMessage = getApiErrorMessage(error);
             alert(`An error occurred: ${friendlyMessage}`);
         } finally {
-            hideAddObjectModal(); // Hide modal regardless of success or failure
+            hideAddObjectModal(); // This already handles resetting the button
         }
     }
 
@@ -428,8 +440,7 @@ function main() {
         // Clear result and restore placeholder
         videoModalResultContainer.innerHTML = '<p class="placeholder">Your generated video will appear here.</p>';
         // Reset button state
-        videoModalGenerateButton.disabled = false;
-        videoModalGenerateButton.textContent = 'Generate Video';
+        setButtonLoadingState(videoModalGenerateButton, false, 'Generate Video');
     }
 
     async function attemptVideoGeneration() {
@@ -443,9 +454,9 @@ function main() {
         const aspectRatio = videoAspectRatioSelect.value;
         // Append the aspect ratio instruction to the user's prompt
         const prompt = `${userPrompt} Generate the video in a ${aspectRatio} aspect ratio.`;
-
-        videoModalGenerateButton.disabled = true;
-        videoModalGenerateButton.textContent = 'GENERATING...';
+        
+        const originalButtonText = 'Generate Video';
+        setButtonLoadingState(videoModalGenerateButton, true, originalButtonText);
         videoModalResultContainer.innerHTML = `<p class="loading-message">Initializing video generation...</p>`;
 
         try {
@@ -516,12 +527,12 @@ function main() {
             const message = error instanceof Error ? error.message : getApiErrorMessage(error);
             videoModalResultContainer.innerHTML = `<p class="error-message">Failed to create video.<br>${message}</p>`;
         } finally {
-            videoModalGenerateButton.disabled = false;
-            videoModalGenerateButton.textContent = 'Generate Video';
+            setButtonLoadingState(videoModalGenerateButton, false, originalButtonText);
         }
     }
 
     // -------------------- EVENT LISTENERS --------------------
+    console.log('Attaching event listeners...');
     // Add Object Modal
     modalAddButton.addEventListener('click', handleInPlaceGeneration);
     modalCancelButton.addEventListener('click', hideAddObjectModal);
@@ -538,6 +549,7 @@ function main() {
     fileInput.addEventListener('change', handleFileChange);
     clearImageButton.addEventListener('click', handleClearImage);
     generateButton.addEventListener('click', generateAndDisplayImages);
+    console.log('Event listeners attached successfully.');
 
   } catch (error) {
     console.error("Application initialization failed:", error);
