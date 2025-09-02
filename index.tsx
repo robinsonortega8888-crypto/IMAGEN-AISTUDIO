@@ -10,9 +10,9 @@ function main() {
   console.log('Application main function started.');
   
   try {
-    const apiKey = process.env.API_KEY;
+    const apiKey = (import.meta as any).env.VITE_GEMINI_API_KEY;
     if (!apiKey) {
-      throw new Error("API_KEY is not set in the environment variables.");
+      throw new Error("VITE_GEMINI_API_KEY is not set in the environment variables.");
     }
     console.log('API key found.');
 
@@ -524,59 +524,66 @@ function main() {
             }
         } catch (error) {
             console.error("Error generating video:", error);
-            const message = error instanceof Error ? error.message : getApiErrorMessage(error);
+            const message = error instanceof Error ? error.message : 'Check the console for details.';
             videoModalResultContainer.innerHTML = `<p class="error-message">Failed to create video.<br>${message}</p>`;
         } finally {
-            setButtonLoadingState(videoModalGenerateButton, false, originalButtonText);
+            setButtonLoadingState(videoModalGenerateButton, false, 'Generate Video');
         }
     }
 
     // -------------------- EVENT LISTENERS --------------------
-    console.log('Attaching event listeners...');
-    // Add Object Modal
-    modalAddButton.addEventListener('click', handleInPlaceGeneration);
-    modalCancelButton.addEventListener('click', hideAddObjectModal);
-    modalUploadButton.addEventListener('click', () => modalFileInput.click());
-    modalFileInput.addEventListener('change', handleModalFileChange);
-    modalClearImageButton.addEventListener('click', handleModalClearImage);
+    if (generateButton) {
+      generateButton.addEventListener('click', generateAndDisplayImages);
+    }
+    if (uploadButton) {
+      uploadButton.addEventListener('click', () => fileInput.click());
+    }
+    if (fileInput) {
+      fileInput.addEventListener('change', handleFileChange);
+    }
+    if (clearImageButton) {
+      clearImageButton.addEventListener('click', handleClearImage);
+    }
+    // Add Object Modal events
+    if (modalAddButton) {
+        modalAddButton.addEventListener('click', handleInPlaceGeneration);
+    }
+    if (modalCancelButton) {
+        modalCancelButton.addEventListener('click', hideAddObjectModal);
+    }
+    if (modalUploadButton) {
+        modalUploadButton.addEventListener('click', () => modalFileInput.click());
+    }
+    if (modalFileInput) {
+        modalFileInput.addEventListener('change', handleModalFileChange);
+    }
+    if (modalClearImageButton) {
+        modalClearImageButton.addEventListener('click', handleModalClearImage);
+    }
+    // Create Video Modal events
+    if (videoModalGenerateButton) {
+        videoModalGenerateButton.addEventListener('click', attemptVideoGeneration);
+    }
+    if (videoModalCancelButton) {
+        videoModalCancelButton.addEventListener('click', hideCreateVideoModal);
+    }
 
-    // Create Video Modal
-    videoModalGenerateButton.addEventListener('click', attemptVideoGeneration);
-    videoModalCancelButton.addEventListener('click', hideCreateVideoModal);
-
-    // Main control event listeners
-    uploadButton.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', handleFileChange);
-    clearImageButton.addEventListener('click', handleClearImage);
-    generateButton.addEventListener('click', generateAndDisplayImages);
-    console.log('Event listeners attached successfully.');
+    // -------------------- INITIALIZATION --------------------
+    console.log('Event listeners attached and app initialized.');
 
   } catch (error) {
     console.error("Application initialization failed:", error);
-    const imageGallery = document.getElementById('image-gallery');
     const controls = document.getElementById('controls');
-    const generateButton = document.getElementById('generate-button') as HTMLButtonElement;
-
-    const errorMessage = 'There was a problem starting the application. This is likely due to a missing API key or configuration issue. Please check the deployment settings.';
-
-    if (imageGallery) {
-        imageGallery.innerHTML = '';
-        const messageElement = document.createElement('p');
-        messageElement.textContent = errorMessage;
-        messageElement.style.color = '#ff6b6b';
-        messageElement.style.textAlign = 'center';
-        imageGallery.appendChild(messageElement);
-    }
-
-    if (controls) {
-      const allControls = controls.querySelectorAll('button, input, select, textarea');
-      allControls.forEach(el => (el as HTMLButtonElement).disabled = true);
-    }
+    const gallery = document.getElementById('image-gallery');
     
-    if (generateButton) {
-      generateButton.textContent = 'Unavailable';
+    if (controls) {
+      controls.classList.add('hidden');
+    }
+    if (gallery) {
+      gallery.innerHTML = `<p style="color: #ff6b6b; font-weight: bold;">Application failed to start: The VITE_GEMINI_API_KEY environment variable is missing. Please go to your project settings (e.g., in Vercel), find the "Environment Variables" section, and add a variable named VITE_GEMINI_API_KEY with your key from Google AI Studio. After adding the key, you may need to redeploy your project.</p>`;
     }
   }
 }
 
+// Run initialization when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', main);

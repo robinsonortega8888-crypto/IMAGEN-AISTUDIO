@@ -7,13 +7,11 @@
 import {GoogleGenAI} from '@google/genai';
 
 function main() {
-    // FIX: Use process.env.API_KEY as per the coding guidelines to fix the TypeScript error on import.meta.env and align with API key handling requirements.
-    const apiKey = process.env.API_KEY;
-    if (!apiKey) {
-      // Manually trigger the catch block if the key is missing.
-      throw new Error("API_KEY is not set in the environment variables.");
-    }
     try {
+        const apiKey = (import.meta as any).env.VITE_GEMINI_API_KEY;
+        if (!apiKey) {
+          throw new Error("VITE_GEMINI_API_KEY is not set in the environment variables.");
+        }
         const ai = new GoogleGenAI({apiKey});
 
         // -------------------- MODEL -------------------------------------------------
@@ -135,7 +133,7 @@ function main() {
         const generateButton = document.getElementById('generate-button') as HTMLButtonElement;
         const promptInput = document.getElementById('prompt-input') as HTMLTextAreaElement;
 
-        const errorMessage = 'There was a problem starting the video generator. This is likely due to a missing API key or configuration issue. Please check the deployment settings.';
+        const errorMessage = 'Application failed to start: The VITE_GEMINI_API_KEY environment variable is missing. Please go to your project settings (e.g., in Vercel), find the "Environment Variables" section, and add a variable named VITE_GEMINI_API_KEY with your key from Google AI Studio. After adding the key, you may need to redeploy your project.';
 
         if (resultContainer) {
             resultContainer.innerHTML = `<p class="error-message">${errorMessage}</p>`;
