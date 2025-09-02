@@ -20,7 +20,6 @@ function main() {
     console.log('GoogleGenAI initialized.');
 
     // -------------------- CHOOSE AN IMAGEN MODEL -------------------------------------------------
-    const textToImageModel = 'imagen-4.0-generate-001';
     const imageAndTextToImageModel = 'gemini-2.5-flash-image-preview';
     const textAndImageToVideoModel = 'veo-2.0-generate-001';
 
@@ -170,16 +169,28 @@ function main() {
             const aspectRatio = aspectRatioSelect.value as '1:1' | '3:4' | '4:3' | '16:9' | '9:16';
             const numberOfImages = parseInt(numImagesInput.value, 10);
 
-            const response = await ai.models.generateImages({
-              model: textToImageModel,
-              prompt: prompt,
-              config: {
-                  numberOfImages: numberOfImages,
+            const fetchResponse = await fetch(
+              `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0:generateImage?key=${apiKey}`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  prompt: prompt,
                   aspectRatio: aspectRatio,
+                  numberOfImages: numberOfImages,
                   outputMimeType: 'image/jpeg',
                   includeRaiReason: true,
-              },
-            });
+                }),
+              }
+            );
+
+            if (!fetchResponse.ok) {
+                const errorData = await fetchResponse.json();
+                console.error("API Error:", errorData);
+                throw new Error(errorData.error?.message || `Request failed with status ${fetchResponse.status}`);
+            }
+
+            const response = await fetchResponse.json();
       
             if (imageGallery && response?.generatedImages && response.generatedImages.length > 0) {
                 imageGallery.innerHTML = '';
@@ -225,7 +236,7 @@ function main() {
             for (let i = 0; i < numberOfImages; i++) {
                 const response = await ai.models.generateContent({
                     model: imageAndTextToImageModel,
-                    contents: { parts: [imagePart, textPart] },
+                    contents: [{ parts: [imagePart, textPart] }],
                     config: {
                         responseModalities: [Modality.IMAGE, Modality.TEXT],
                     },
@@ -403,7 +414,7 @@ function main() {
 
             const response = await ai.models.generateContent({
                 model: imageAndTextToImageModel,
-                contents: { parts },
+                contents: [{ parts }],
                 config: {
                     responseModalities: [Modality.IMAGE, Modality.TEXT],
                 },
