@@ -169,29 +169,17 @@ function main() {
             const aspectRatio = aspectRatioSelect.value as '1:1' | '3:4' | '4:3' | '16:9' | '9:16';
             const numberOfImages = parseInt(numImagesInput.value, 10);
 
-            const fetchResponse = await fetch(
-              `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0:generateImage?key=${apiKey}`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  prompt: prompt,
-                  aspectRatio: aspectRatio,
-                  numberOfImages: numberOfImages,
-                  outputMimeType: 'image/jpeg',
-                  includeRaiReason: true,
-                }),
-              }
-            );
+            // Using the SDK for robustness and adherence to guidelines.
+            const response = await ai.models.generateImages({
+                model: 'imagen-4.0-generate-001',
+                prompt: prompt,
+                config: {
+                    numberOfImages: numberOfImages,
+                    outputMimeType: 'image/jpeg',
+                    aspectRatio: aspectRatio,
+                },
+            });
 
-            if (!fetchResponse.ok) {
-                const errorData = await fetchResponse.json();
-                console.error("API Error:", errorData);
-                throw new Error(errorData.error?.message || `Request failed with status ${fetchResponse.status}`);
-            }
-
-            const response = await fetchResponse.json();
-      
             if (imageGallery && response?.generatedImages && response.generatedImages.length > 0) {
                 imageGallery.innerHTML = '';
                 response.generatedImages.forEach((generatedImage: GeneratedImage, index: number) => {
