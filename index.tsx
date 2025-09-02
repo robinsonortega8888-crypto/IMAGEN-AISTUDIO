@@ -120,23 +120,34 @@ function main() {
         aspectRatioSelect.disabled = false;
     }
 
-
     async function generateAndDisplayImages() {
-      if (!promptInput || !aspectRatioSelect || !imageGallery || !numImagesInput) return;
-      
-      generateButton.disabled = true; // Disable button while generating
-      generateButton.textContent = 'GENERATING...';
-      showMessage('PROCESSING... please wait');
+      // Immediately disable the button and wrap the entire function
+      // in a try/finally to guarantee it gets re-enabled.
+      if (generateButton) {
+          generateButton.disabled = true;
+          generateButton.textContent = 'GENERATING...';
+      }
 
       try {
-        if (referenceImage) {
-            await generateFromImageAndText();
-        } else {
-            await generateFromText();
-        }
+          if (!promptInput || !aspectRatioSelect || !imageGallery || !numImagesInput) {
+              throw new Error("One or more required UI elements could not be found.");
+          }
+          showMessage('PROCESSING... please wait');
+
+          if (referenceImage) {
+              await generateFromImageAndText();
+          } else {
+              await generateFromText();
+          }
+      } catch (error) {
+          console.error("An unexpected error occurred during image generation:", error);
+          const message = error instanceof Error ? error.message : "An unknown error occurred.";
+          showMessage(`Error: ${message}`, true);
       } finally {
-        generateButton.disabled = false; // Re-enable button
-        generateButton.textContent = 'Generate';
+          if (generateButton) {
+              generateButton.disabled = false;
+              generateButton.textContent = 'Generate';
+          }
       }
     }
 
