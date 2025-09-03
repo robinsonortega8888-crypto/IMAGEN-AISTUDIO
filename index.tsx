@@ -15,7 +15,7 @@ function main() {
     if (!apiKey) {
       throw new Error("VITE_API_KEY is not set in the environment variables.");
     }
-    console.log('API key found.');
+    console.log('Loaded API key:', apiKey ? '✅ Exists' : '❌ Missing');
 
     const ai = new GoogleGenAI({apiKey});
     console.log('GoogleGenAI initialized.');
